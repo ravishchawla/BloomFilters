@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.line.hover {
+  stroke-width: 5px;
+}
+
+text {
+  font-weight: normal;
+}
+
+text.hover {
+  font-weight: bold;
+}
+
+.legend rect {
+  fill:white;
+  stroke:black;
+  opacity:0.8;
+}
+
+</style>
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+<script src="lib/d3.legend.js"></script>
+<script>
+
+var margin = {top: 20, right: 80, bottom: 30, left: 50},
+    width = document.body.scrollWidth - margin.left - margin.right,
+    height = document.body.scrollHeight - margin.top - margin.bottom - 20;
+
+
+
+var color = d3.scale.category10();
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top / 2 - 8))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text("C value ratio of Bloom Filters vs. False Positive Rate for different n");
+
+d3.csv("data/bloom_filter_out.csv", function(error, data) {
+  if (error) throw error;
+
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "n"; }));
+
+  var rates = color.domain().map(function(c_val) {
+    return {
+      c: c_val,
+      values: data.map(function(d) {
+        return {n: +d.n, f: +d[c_val]};
+      })
+    };
+  });
+
+  var minN = d3.min(data, function(d) { return +d.n; });
+  var maxN = d3.max(data, function(d) { return +d.n; });
+
+  var x = d3.scale.linear()
+    .range([1, width]);
+
+  var y = d3.scale.linear()
+    .range([height, 0]);
+
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    .tickFormat(d3.format("g"));
+
+  var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format("%"));
+
+
+  x.domain([minN, maxN]);
+  var line = d3.svg.line()
+    .interpolate("basis")
+    .x(function(d) { return x(+d.n); })
+    .y(function(d) { return y(+d.f); });
+  //x.domain(d3.extent(data, function(d) { return +d.n; }));
+
+  y.domain([
+    d3.min(rates, function(d) { return d3.min(d.values, function(v) { return +v.f; }); }),
+    d3.max(rates, function(d) { return d3.max(d.values, function(v) { return +v.f; }); })
+  ]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height  + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("x", width/2)
+      .attr("y", -5)
+      .attr("dx", ".1em")
+      .style("text-anchor", "end")
+      .text("C ratio");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("x", -height + 5)
+      .attr("dy", ".71em")
+      .style("text-anchor", "start")
+      .text("False Positive Rate");
+
+  var rate = svg.selectAll(".rate")
+      .data(rates)
+    .enter().append("g")
+      .attr("class", "rate");
+
+  rate.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .style("stroke", function(d) { return color(d.c); })
+      .attr("data-legend",function(d) { return d.c})
+      .on('mouseover', function(d) {
+          d3.select(this).classed("hover", true);
+          d3.select("#_" + d.c.split(" ").join("_").replace("=","")).classed("hover", true);
+      })
+      .on('mouseout', function(d) {
+          d3.select(this).classed("hover", false);
+          d3.select("#_" + d.c.split(" ").join("_").replace("=","")).classed("hover", false);
+      });
+
+  legend = svg.append("g")
+    .attr("class","legend")
+    .attr("transform","translate(" + (width - 75) + "," + (50) + ")")
+    .style("font-size","12px")
+    .call(d3.legend);
+});
+
+</script>
