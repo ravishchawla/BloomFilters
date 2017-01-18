@@ -23,7 +23,7 @@ The code is included in the following files
 
 # Visualization:
 
-	- index.html      - contains Visualization code. Plot a chart using data from tests
+	- index.html              - contains Visualization code. Plot a chart using data from tests
 
 	- lib/	
 
@@ -38,12 +38,12 @@ The code is included in the following files
 	Report /
 		- Report.pdf           - Report for this project
 	
-		- plot.png       		 - An image of the graph ploted by the Visualization
+		- plot.png             - An image of the graph ploted by the Visualization
 	
 
-	- Reademe.md           - Readme file
+	- Reademe.md                   - Readme file
 
-	- Makefile			 - The Make file
+	- Makefile		       - The Make file
 
 
 The Make file accepts the following targets:
