@@ -33,32 +33,32 @@ The code is included in the following files
 # Other files
 
 	data /
-		bloom_filter_out.csv - contains data generated after running the Driver code
+		- bloom_filter_out.csv - contains data generated after running the Driver code
 	
 	Report /
-		Report.pdf           - Report for this project
+		- Report.pdf           - Report for this project
 	
-		plot.png       		 - An image of the graph ploted by the Visualization
+		- plot.png       		 - An image of the graph ploted by the Visualization
 	
 
-	Reademe.md           - Readme file
+	- Reademe.md           - Readme file
 
-	Makefile			 - The Make file
+	- Makefile			 - The Make file
 
 
 The Make file accepts the following targets:
 
-make compile
-	To compile the program.
+	- make compile
+		To compile the program.
 
-make run
-	To run the program.
+	- make run
+		To run the program.
 
-make all
-	To compile and run the program.
+	- make all
+		To compile and run the program.
 
-make plot
-	To open local server so the plot can be viewed.
+	- make plot
+		To open local server so the plot can be viewed.
 
-make clean
-	To remove the compiled executable.
+	- make clean
+		To remove the compiled executable.
