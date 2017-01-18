@@ -10,7 +10,8 @@ SeededHash
 The code is included in the following files
 
 # Bloom Filters:
-app /
+app/
+
 	- SeededHash.h    - header file for SeededHash class
 	
 	- SeededHash.cpp  - implementation of functions in SeededHash class
